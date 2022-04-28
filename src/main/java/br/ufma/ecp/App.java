@@ -21,8 +21,12 @@ public class App
         return "";
     } 
 
-    public static void main( String[] args )
-    {
-        System.out.println( fromFile() );
+    public static void main( String[] args ){
+            String input = "5+96";
+            //Parser p = new Passer(input.getBytes());
+            Scanner p = new Scanner(input.getBytes());
+            System.out.println(p.nextToken());
+            System.out.println(p.nextToken());
+            System.out.println(p.nextToken());
     }
 }
