@@ -14,7 +14,7 @@ public class Scanner
         start = 0;
     }
 
-    public String nextToken(){
+    public Token nextToken(){
         start = current;
         char ch = peek();
 
@@ -25,28 +25,24 @@ public class Scanner
         switch(ch){
             case '+':
                 advance();
-                return "+";
+                return new Token(TokenType.PLUS, "+");
             case '-':
                 advance();
-                return "-";
-        /*
-            case '*':
-                advance();
-                return "*";
-        */
+                return new Token(TokenType.MINUS, "-");
             default:
                 break;
         }
-        return "";
+
+        return null;
     }
 
-    private String number(){
+    private Token number(){
         while(Character.isDigit(peek())){
             advance();
         }
-        
         String s = new String(input, start, current-start, StandardCharsets.UTF_8);
-        return s;
+        Token token = new Token(TokenType.NUMBER, s);
+        return token;
     }
 
     private void advance(){

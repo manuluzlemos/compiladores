@@ -22,7 +22,7 @@ public class App
     } 
 
     public static void main( String[] args ){
-            String input = "5+96";
+            String input = "8790+1";
             //Parser p = new Passer(input.getBytes());
             Scanner p = new Scanner(input.getBytes());
             System.out.println(p.nextToken());
