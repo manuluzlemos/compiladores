@@ -22,11 +22,8 @@ public class App
     } 
 
     public static void main( String[] args ){
-            String input = "8790+1";
-            //Parser p = new Passer(input.getBytes());
-            Scanner p = new Scanner(input.getBytes());
-            System.out.println(p.nextToken());
-            System.out.println(p.nextToken());
-            System.out.println(p.nextToken());
+        String input = "879+1-999+99";
+        Parser p = new Parser(input.getBytes());
+        p.parser();
     }
 }

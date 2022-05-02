@@ -2,8 +2,8 @@ package br.ufma.ecp;
 
 import java.nio.charset.StandardCharsets;
 
-public class Scanner
-{
+public class Scanner {
+
     private byte[] input;
     private int current;
     private int start;
@@ -29,10 +29,11 @@ public class Scanner
             case '-':
                 advance();
                 return new Token(TokenType.MINUS, "-");
+            case '0':
+                return new Token(TokenType.EOF, "EOF");
             default:
                 break;
         }
-
         return null;
     }
 

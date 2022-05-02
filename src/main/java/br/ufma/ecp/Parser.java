@@ -1,27 +1,26 @@
 package br.ufma.ecp;
 
-public class Parser
-{
-    private byte[] input;
-    private int current;
+import static br.ufma.ecp.TokenType.*;
+
+public class Parser {
+
+    private Scanner scan;
+    private Token currentToken;
 
     public Parser (byte[] input) {
-        this.input = input;
+        scan = new Scanner(input);
+        nextToken();
     }
 
-    private void match(char c){
-        if (c == peek()) {
-            current++;
+    private void nextToken() {
+        currentToken = scan.nextToken();
+    }
+
+    private void match(TokenType t) {
+        if (currentToken.type == t) {
+            nextToken();
         } else {
             throw new Error("syntax error");
-        }
-    }
-
-    private char peek(){
-        if (current < input.length) {
-            return (char)input[current];
-        } else {
-            return 0;
         }
     }
 
@@ -30,34 +29,35 @@ public class Parser
     }
 
     void expr() {
-        digit();
+        number();
         oper();
     }
 
     void oper() {
-        if (peek() == '+') {
-            match('+');
-            digit();
+        if (currentTokenIs(PLUS)) {
+            match(PLUS);
+            number();
             System.out.println("add");
             oper();
-        } else if (peek() == '-') {
-            match('-');
-            digit();
+        } else if (currentTokenIs(MINUS)) {
+            match(MINUS);
+            number();
             System.out.println("sub");
             oper();
-        } else if (peek() == 0) {
-            // vazio --> indica o final da entrada
+        } else if (currentTokenIs(EOF)) {
+            // vazio --> indica o final da entrada/arquivo
         } else {
             throw new Error("syntax error");
         }
     }
 
-    void digit() {
-        if (Character.isDigit(peek())) {
-            System.out.println("push " + peek());
-            match(peek());
-        } else {
-            throw new Error("syntax error");
-        }
+    void number() {
+        System.out.println("push " + currentToken.lexeme);
+        match(NUMBER);
     }
+
+    boolean currentTokenIs (TokenType type){
+        return currentToken.type == type;
+    }
+    
 }
