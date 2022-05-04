@@ -25,7 +25,7 @@ public class App
 
     public static void main( String[] args ){
         
-        String input = "879 + 1 + manu - 999 + emanuelle";
+        String input = "879 + 1 + manu - 999 + while + emanuelle";
         Parser p = new Parser(input.getBytes());
         p.parser();
         

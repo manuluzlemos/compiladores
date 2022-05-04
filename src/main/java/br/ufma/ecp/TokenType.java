@@ -7,6 +7,9 @@ public enum TokenType {
 
     IDENTIFIER,
 
+    // keywords
+    WHILE,
+
     EOF,
 
     ILLEGAL
