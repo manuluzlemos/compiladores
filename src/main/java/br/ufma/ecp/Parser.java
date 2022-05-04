@@ -29,19 +29,38 @@ public class Parser {
     }
 
     void expr() {
-        number();
+        term();
         oper();
     }
+
+    void term(){
+        if (currentTokenIs(NUMBER)) {
+            number();
+        } else if (currentTokenIs(IDENTIFIER)) {
+            identifier();
+        } else {
+            throw new Error("syntax error found " + currentToken.lexeme);
+        }
+    }
+
+    /* GRAMÁTICA
+
+    oper -> term oper 
+     | - term oper 
+     | ϵ 
+    
+    term -> number | identifier
+    */
 
     void oper() {
         if (currentTokenIs(PLUS)) {
             match(PLUS);
-            number();
+            term();
             System.out.println("add");
             oper();
         } else if (currentTokenIs(MINUS)) {
             match(MINUS);
-            number();
+            term();
             System.out.println("sub");
             oper();
         } else if (currentTokenIs(EOF)) {
@@ -51,9 +70,14 @@ public class Parser {
         }
     }
 
-    void number() {
+    void number(){
         System.out.println("push " + currentToken.lexeme);
         match(NUMBER);
+    }
+
+    void identifier(){
+        System.out.println("push " + currentToken.lexeme);
+        match(IDENTIFIER);
     }
 
     boolean currentTokenIs (TokenType type){
