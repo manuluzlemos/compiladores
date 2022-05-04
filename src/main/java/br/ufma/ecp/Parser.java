@@ -16,11 +16,11 @@ public class Parser {
         currentToken = scan.nextToken();
     }
 
-    private void match(TokenType t) {
-        if (currentToken.type == t) {
+    private void match(TokenType type) {
+        if (currentToken.type == type) {
             nextToken();
         } else {
-            throw new Error("syntax error");
+            throw new Error("Syntax Error - expected " + type + " found " + currentToken.lexeme);
         }
     }
 
@@ -47,7 +47,7 @@ public class Parser {
         } else if (currentTokenIs(EOF)) {
             // vazio --> indica o final da entrada/arquivo
         } else {
-            throw new Error("syntax error");
+            throw new Error("syntax error found " + currentToken.lexeme);
         }
     }
 

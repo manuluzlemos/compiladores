@@ -29,12 +29,12 @@ public class Scanner {
             case '-':
                 advance();
                 return new Token(TokenType.MINUS, "-");
-            case '0':
+            case 0:
                 return new Token(TokenType.EOF, "EOF");
             default:
-                break;
+                advance();
+                return new Token(TokenType.ILLEGAL, Character.toString(ch));
         }
-        return null;
     }
 
     private Token number(){

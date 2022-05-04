@@ -22,7 +22,7 @@ public class App
     } 
 
     public static void main( String[] args ){
-        String input = "879+1-999+99";
+        String input = "879+1-999*99";
         Parser p = new Parser(input.getBytes());
         p.parser();
     }
