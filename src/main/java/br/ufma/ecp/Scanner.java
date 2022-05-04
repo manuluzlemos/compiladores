@@ -15,6 +15,8 @@ public class Scanner {
     }
 
     public Token nextToken(){
+        skipWhitespace();//garante que, ao iniciar, não teremos espaço em branco
+
         start = current;
         char ch = peek();
 
@@ -38,6 +40,14 @@ public class Scanner {
             default:
                 advance();
                 return new Token(TokenType.ILLEGAL, Character.toString(ch));
+        }
+    }
+
+    private void skipWhitespace(){
+        char ch = peek();
+        while(ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n'){
+            advance();
+            ch = peek();
         }
     }
 
