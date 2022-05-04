@@ -30,7 +30,7 @@ public class App
         p.parser();
         */
 
-        String input = "879+manu";
+        String input = "879+manu1+1";
         Scanner scan = new Scanner(input.getBytes());
         for(Token tk = scan.nextToken(); tk.type != EOF; tk = scan.nextToken()){
             System.out.println(tk);

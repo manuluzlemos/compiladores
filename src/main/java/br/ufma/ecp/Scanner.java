@@ -41,8 +41,12 @@ public class Scanner {
         }
     }
 
+    private boolean isAlphaNumeric(char ch){
+        return Character.isLetter(ch) || Character.isDigit(ch);
+    }
+
     private Token identifier(){
-        while(Character.isLetter(peek())){
+        while(isAlphaNumeric(peek())){
             advance();
         }
         String s = new String(input, start, current-start, StandardCharsets.UTF_8);
