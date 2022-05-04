@@ -22,6 +22,10 @@ public class Scanner {
             return number();
         }
 
+        if(Character.isLetter(ch)){
+            return identifier();
+        }
+
         switch(ch){
             case '+':
                 advance();
@@ -35,6 +39,15 @@ public class Scanner {
                 advance();
                 return new Token(TokenType.ILLEGAL, Character.toString(ch));
         }
+    }
+
+    private Token identifier(){
+        while(Character.isLetter(peek())){
+            advance();
+        }
+        String s = new String(input, start, current-start, StandardCharsets.UTF_8);
+        Token token = new Token(TokenType.IDENTIFIER, s);
+        return token;
     }
 
     private Token number(){

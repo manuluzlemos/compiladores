@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static br.ufma.ecp.TokenType.*;
+
 public class App 
 {
 
@@ -22,8 +24,16 @@ public class App
     } 
 
     public static void main( String[] args ){
+        /*
         String input = "879+1-999*99";
         Parser p = new Parser(input.getBytes());
         p.parser();
+        */
+
+        String input = "879+manu";
+        Scanner scan = new Scanner(input.getBytes());
+        for(Token tk = scan.nextToken(); tk.type != EOF; tk = scan.nextToken()){
+            System.out.println(tk);
+        }
     }
 }
