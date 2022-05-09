@@ -135,10 +135,28 @@ public class Scanner {
 
     private void skipWhitespace(){
         char ch = peek();
-        while(ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n'){
+        while(ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n' || isComment()){
             advance();
             ch = peek();
         }
+    }
+
+    private boolean isComment(){
+        // A linha que inicia com "//" e finaliza com "\n" é um comentário e deve ser ignorada
+        if(peek() == '/'){
+            if ((current + 1) < input.length) {
+                advance();
+                if((char)input[current] == '/'){
+                    advance();
+                    while(peek() != '\n'){
+                        advance();
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
     }
 
     private Token isString(){

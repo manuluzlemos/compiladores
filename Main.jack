@@ -1,3 +1,4 @@
 if (x < 0) {
-let sign = "negative ------- asdhasd asdasjdkjasd asdhaskd";
+    // prints the sign
+    let sign = "negative";
 }
