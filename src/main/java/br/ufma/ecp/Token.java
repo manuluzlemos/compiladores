@@ -9,8 +9,9 @@ public class Token {
     final String lexeme;
 
     List<String> symbols = Arrays.asList(
-        "+", "-", ".", "*", "/", "&", "|", "<", ">", 
+        "+", "-", ".", "*", "/", "&amp;", "|", "&lt;", "&lg;", 
         "=", "~", "{", "}", "(", ")", "[", "]", ",", ";");
+
     List<String> keywords = Arrays.asList(
         "while", "class", "constructor", "function", "method",
         "field", "static", "var", "int", "char", "boolean", "void", 
@@ -33,6 +34,6 @@ public class Token {
             categoria = "stringConstant";
         }
 
-        return "<" + categoria + ">" + lexeme + "</" + categoria + ">"; 
+        return "<" + categoria + "> " + lexeme + " </" + categoria + ">"; 
     }
 }
