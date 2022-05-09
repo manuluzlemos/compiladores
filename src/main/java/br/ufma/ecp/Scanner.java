@@ -15,6 +15,26 @@ public class Scanner {
     static{
         keywords = new HashMap<>();
         keywords.put("while", TokenType.WHILE);
+        keywords.put("class", TokenType.CLASS);
+        keywords.put("constructor", TokenType.CONSTRUCTOR);
+        keywords.put("function", TokenType.FUNCTION);
+        keywords.put("method", TokenType.METHOD);
+        keywords.put("field", TokenType.FIELD);
+        keywords.put("static", TokenType.STATIC);
+        keywords.put("var", TokenType.VAR);
+        keywords.put("int", TokenType.INT);
+        keywords.put("char", TokenType.CHAR);
+        keywords.put("boolean", TokenType.BOOLEAN);
+        keywords.put("void", TokenType.VOID);
+        keywords.put("true", TokenType.TRUE);      
+        keywords.put("false", TokenType.FALSE);
+        keywords.put("null", TokenType.NULL);
+        keywords.put("this", TokenType.THIS);
+        keywords.put("let", TokenType.LET);
+        keywords.put("do", TokenType.DO);
+        keywords.put("if", TokenType.IF);
+        keywords.put("else", TokenType.ELSE);
+        keywords.put("return", TokenType.RETURN);
     }
     
     public Scanner (byte[] input){
@@ -33,7 +53,7 @@ public class Scanner {
             return number();
         }
 
-        if(Character.isLetter(ch)){
+        if(Character.isLetter(ch) || ch == '_'){
             return identifier();
         }
 
@@ -44,6 +64,63 @@ public class Scanner {
             case '-':
                 advance();
                 return new Token(TokenType.MINUS, "-");
+            case '.':
+                advance();
+                return new Token(TokenType.DOT, ".");
+            case '*':
+                advance();
+                return new Token(TokenType.ASTERISK, "*");
+            case '/':
+                advance();
+                return new Token(TokenType.SLASH, "/");
+            case '&':
+                advance();
+                return new Token(TokenType.AND, "&amp;");
+            case '|':
+                advance();
+                return new Token(TokenType.OR, "|");
+            
+            case '<':
+                advance();
+                return new Token(TokenType.LT, "&lt;");
+            case '>':
+                advance();
+                return new Token(TokenType.LT, "&gt;");
+
+            case '=':
+                advance();
+                return new Token(TokenType.ASSIGN, "=");
+            case '~':
+                advance();
+                return new Token(TokenType.ASSIGN, "~");
+            
+            case '{':
+                advance();
+                return new Token(TokenType.LBRACE, "{");
+            case '}':
+                advance();
+                return new Token(TokenType.RBRACE, "}");
+            
+            case '(':
+                advance();
+                return new Token(TokenType.LPAREN, "(");
+            case ')':
+                advance();
+                return new Token(TokenType.RPAREN, ")");
+
+            case '[':
+                advance();
+                return new Token(TokenType.LBRACKET, "]");
+            case ']':
+                advance();
+                return new Token(TokenType.RBRACKET, "]");
+
+            case ',':
+                advance();
+                return new Token(TokenType.COMMA, ",");
+            case ';':
+                advance();
+                return new Token(TokenType.SEMICOLON, ";");
             case 0:
                 return new Token(TokenType.EOF, "EOF");
             default:
@@ -65,7 +142,7 @@ public class Scanner {
     }
 
     private Token identifier(){
-        while(isAlphaNumeric(peek())){
+        while(isAlphaNumeric(peek()) || peek() == '_'){
             advance();
         }
         String id = new String(input, start, current-start, StandardCharsets.UTF_8);
