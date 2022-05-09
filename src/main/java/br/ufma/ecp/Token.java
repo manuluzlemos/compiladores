@@ -1,5 +1,7 @@
 package br.ufma.ecp;
 
+import java.util.List;
+
 public class Token {
     
     final TokenType type;

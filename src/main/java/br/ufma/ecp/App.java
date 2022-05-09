@@ -25,17 +25,17 @@ public class App
 
     public static void main( String[] args ){
         
-        String input = "879 + 1 + manu - 999 + while + emanuelle";
+        /*
+        String input = "879 + 1 + manu - 999 + while static return + emanuelle";
         Parser p = new Parser(input.getBytes());
         p.parser();
+        */
         
-
-        /*
-        String input = "879 + manu1 - 1 * oi";
-        Scanner scan = new Scanner(input.getBytes());
+        Scanner scan = new Scanner(fromFile().getBytes());
+        System.out.println("<tokens>");
         for(Token tk = scan.nextToken(); tk.type != EOF; tk = scan.nextToken()){
             System.out.println(tk);
         }
-        */
+        System.out.println("</tokens>");
     }
 }

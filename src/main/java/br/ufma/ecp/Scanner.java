@@ -57,6 +57,10 @@ public class Scanner {
             return identifier();
         }
 
+        if(ch == '\"'){
+            return isString();
+        }
+
         switch(ch){
             case '+':
                 advance();
@@ -135,6 +139,21 @@ public class Scanner {
             advance();
             ch = peek();
         }
+    }
+
+    private Token isString(){
+        int cont = 0;
+        while(cont != 2){
+            if(peek() == '\"'){
+                cont++;
+            }
+            advance();
+        }
+        String id = new String(input, start+1, current-start-2, StandardCharsets.UTF_8);
+        TokenType type = keywords.get(id);
+        if (type == null) type = TokenType.STRING;
+        Token token = new Token(type, id);
+        return token;
     }
 
     private boolean isAlphaNumeric(char ch){
