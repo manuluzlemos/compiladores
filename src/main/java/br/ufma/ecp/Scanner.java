@@ -114,7 +114,7 @@ public class Scanner {
 
             case '[':
                 advance();
-                return new Token(TokenType.LBRACKET, "]");
+                return new Token(TokenType.LBRACKET, "[");
             case ']':
                 advance();
                 return new Token(TokenType.RBRACKET, "]");
@@ -142,17 +142,35 @@ public class Scanner {
     }
 
     private boolean isComment(){
-        // A linha que inicia com "//" e finaliza com "\n" é um comentário e deve ser ignorada
         if(peek() == '/'){
             if ((current + 1) < input.length) {
-                advance();
-                if((char)input[current] == '/'){
+
+                if ((char)input[current+1] == '/') { // Inicia com "//" e finaliza com "\n"
+                    advance();
                     advance();
                     while(peek() != '\n'){
                         advance();
                     }
                     return true;
+                    
+                } else if((char)input[current+1] == '*') { // Inicia com "/*" e finaliza com "*/"
+                    advance();
+                    boolean end = false;
+                    while(!end){
+                        advance();
+                        if(peek() == '*'){
+                            if ((current+1) < input.length) {
+                                if ((char)input[current+1] == '/') {
+                                    advance();
+                                    end = true;
+                                }
+                            }
+                        }
+                    }
+                    advance();
+                    return true;
                 }
+                return false;
             }
             return false;
         }
