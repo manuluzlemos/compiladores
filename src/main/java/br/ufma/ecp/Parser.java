@@ -27,11 +27,20 @@ public class Parser {
     void parserLet(){
         System.out.println("<letStatement>");
         expectPeek(LET);
-        expectPeek(IDENTIFIER);
+        identifierIs();
         expectPeek(ASSIGN);
         parserExpression();
         expectPeek(SEMICOLON);
         System.out.println("</letStatement>");
+    }
+
+    void identifierIs(){
+        expectPeek(IDENTIFIER);
+        if(peekTokenIs(LBRACKET)){
+            expectPeek(LBRACKET);
+            parserExpression();
+            expectPeek(RBRACKET);
+        }
     }
 
     // expression -> term (op term)*
@@ -68,7 +77,7 @@ public class Parser {
             expectPeek(BT);
             parseTerm();
             parseOper();
-        } else if (peekTokenIs(SEMICOLON)) {
+        } else if (peekTokenIs(SEMICOLON) || peekTokenIs(RBRACKET)) {
             // vazio --> indica o final da entrada/arquivo
         } else {
             throw new Error("syntax error found " + currentToken.lexeme);
