@@ -42,16 +42,18 @@ public enum TokenType {
     INT, 
     CHAR, 
     BOOLEAN, 
-    VOID, 
-    TRUE, 
-    FALSE, 
-    NULL, 
-    THIS, 
+    VOID,  
     LET, 
     DO, 
     IF, 
     ELSE, 
     RETURN,
+
+    // keywords constants
+    TRUE, 
+    FALSE, 
+    NULL, 
+    THIS,
 
     EOF,
 

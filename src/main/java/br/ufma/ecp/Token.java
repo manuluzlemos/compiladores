@@ -9,13 +9,17 @@ public class Token {
     final String lexeme;
 
     List<String> symbols = Arrays.asList(
-        "+", "-", ".", "*", "/", "&amp;", "|", "&lt;", "&lg;", 
+        "+", "-", ".", "*", "/", "&", "|", "<", ">", 
         "=", "~", "{", "}", "(", ")", "[", "]", ",", ";");
 
     List<String> keywords = Arrays.asList(
         "while", "class", "constructor", "function", "method",
         "field", "static", "var", "int", "char", "boolean", "void", 
-        "true", "false", "null", "this", "let", "do", "if", "else", "return");
+        "let", "do", "if", "else", "return");
+    
+    List<String> keywordsConst = Arrays.asList(
+        "true", "false", "null", "this"
+    );
     
     public Token(TokenType type, String lexeme){
         this.type = type;
@@ -28,10 +32,12 @@ public class Token {
             categoria = "symbol";
         } else if(keywords.contains(lexeme)){
             categoria = "keyword";
+        } else if(keywordsConst.contains(lexeme)){
+            categoria = "keywordConstant";
         } else if (categoria == "NUMBER"){
-            categoria = "intConst";
+            categoria = "integerConstant";
         } else if (categoria == "STRING"){
-            categoria = "stringConst";
+            categoria = "stringConstant";
         } else if (categoria == "IDENTIFIER"){
             categoria = "identifier";
         }
