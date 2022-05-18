@@ -9,7 +9,7 @@ public class Token {
     final String lexeme;
 
     List<String> symbols = Arrays.asList(
-        "+", "-", ".", "*", "/", "&", "|", "<", ">", 
+        "+", "-", ".", "*", "/", "&amp;", "|", "&lt;", "&gt;", 
         "=", "~", "{", "}", "(", ")", "[", "]", ",", ";");
 
     List<String> keywords = Arrays.asList(
