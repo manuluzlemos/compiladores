@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static br.ufma.ecp.TokenType.*;
+import br.ufma.ecp.token.Token;
+import br.ufma.ecp.token.TokenType;
+
 
 public class App 
 {
@@ -23,18 +25,8 @@ public class App
         return "";
     } 
 
-    public static void main( String[] args ){
-        //String input = "let a = manu + 10 + 1;";
-        Parser p = new Parser(fromFile().getBytes());
-        p.parser();
-        
-        /*
-        Scanner scan = new Scanner(fromFile().getBytes());
-        System.out.println("<tokens>");
-        for(Token tk = scan.nextToken(); tk.type != EOF; tk = scan.nextToken()){
-            System.out.println(tk);
-        }
-        System.out.println("</tokens>");
-        */
+    public static void main( String[] args )
+    {
+        System.out.println("Testando");
     }
 }

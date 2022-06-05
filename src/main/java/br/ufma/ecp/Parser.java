@@ -1,14 +1,21 @@
 package br.ufma.ecp;
 
-import static br.ufma.ecp.TokenType.*;
+import static br.ufma.ecp.token.TokenType.*;
+
+
+import br.ufma.ecp.token.Token;
+import br.ufma.ecp.token.TokenType;
 
 public class Parser {
+
+    private static class ParseError extends RuntimeException {}
 
     private Scanner scan;
     private Token currentToken;
     private Token peekToken;
+    private StringBuilder xmlOutput = new StringBuilder();
 
-    public Parser (byte[] input) {
+    public Parser(byte[] input) {
         scan = new Scanner(input);
         nextToken();
     }
@@ -18,120 +25,276 @@ public class Parser {
         peekToken = scan.nextToken();
     }
 
-
-    void parser(){
-        parserLet();
+    void parse() {
+        parseClass();
     }
 
-    // letStatement -> 'let' identifier ( '[' expression ']' )? '=' expression ';'
-    void parserLet(){
-        System.out.println("<letStatement>");
-        expectPeek(LET);
-        identifierIs();
-        expectPeek(ASSIGN);
-        parserExpression();
+    void parseClass() {
+        printNonTerminal("class");
+        
+        expectPeek(CLASS);
+        expectPeek(IDENTIFIER); // className
+        expectPeek(LBRACE);
+
+        // 0 ou várias declarações de variáveis da classe
+        while (peekTokenIs(STATIC) || peekTokenIs(FIELD)){
+            parseClassVarDec();
+        }
+
+        // 0 ou várias declarações de subroutinas da classe subroutineDec
+        while (peekTokenIs(CONSTRUCTOR) || peekTokenIs(FUNCTION) || peekTokenIs(METHOD)){
+            parseSubroutineDec();
+        }        
+
+        expectPeek(RBRACE);
+
+        printNonTerminal("/class");
+    }
+
+    void parseSubroutineCall() {
+
+    }
+
+    void parseDo() {
+        printNonTerminal("doStatement");
+    
+        printNonTerminal("/doStatement");
+    }
+
+    void parseVarDec() {
+        printNonTerminal("varDec");
+
+        expectPeek(VAR);
+        parseType();
+        expectPeek(IDENTIFIER); // varName
+        while(peekTokenIs(COMMA)){  // pode ter outras variáveis
+            expectPeek(COMMA);
+            expectPeek(IDENTIFIER);
+        }
         expectPeek(SEMICOLON);
-        System.out.println("</letStatement>");
+
+        printNonTerminal("/varDec");
     }
 
-    void identifierIs(){
+    void parseClassVarDec() {
+        printNonTerminal("classVarDec");
+
+        expectPeek(STATIC, FIELD);
+        parseType();
+        expectPeek(IDENTIFIER); // varName 
+        while(peekTokenIs(COMMA)){  // pode ter outras variáveis
+            expectPeek(COMMA);
+            expectPeek(IDENTIFIER);
+        }
+        expectPeek(SEMICOLON);
+
+        printNonTerminal("/classVarDec");
+    }
+
+    void parseType(){
+        expectPeek(INT, CHAR, BOOLEAN, IDENTIFIER); // int, char, boolean ou className
+    }
+
+    void parseSubroutineDec() {
+        printNonTerminal("subroutineDec");
+
+        expectPeek(CONSTRUCTOR, FUNCTION, METHOD);
+
+        // void | type
+        if(peekTokenIs(VOID)){
+            expectPeek(VOID);
+        }else{
+            parseType();
+        }
+
+        expectPeek(IDENTIFIER); // subroutineName
+        expectPeek(LPAREN);
+        parseParameterList();
+        expectPeek(RPAREN);
+        parseSubroutineBody();
+   
+        printNonTerminal("/subroutineDec");
+    }
+
+    void parseParameterList() {
+        printNonTerminal("parameterList");
+
+        if (!peekTokenIs(RPAREN)){
+            parseType(); 
+            expectPeek(IDENTIFIER);
+        }
+
+        while (peekTokenIs(COMMA)){
+            expectPeek(COMMA);
+            parseType();
+            expectPeek(IDENTIFIER);
+        }
+
+        printNonTerminal("/parameterList");
+    }
+
+    void parseSubroutineBody() {
+        printNonTerminal("subroutineBody");
+
+        expectPeek(LBRACE);
+
+        // 0 ou várias declarações de variáveis da subrotina 
+        while (peekTokenIs(VAR)){
+            parseVarDec();
+        }
+
+        parseStatements();
+        expectPeek(RBRACE);
+     
+        printNonTerminal("/subroutineBody");
+    }
+
+    void parseLet() {
+        printNonTerminal("letStatement");
+        expectPeek(LET);
         expectPeek(IDENTIFIER);
-        if(peekTokenIs(LBRACKET)){
+
+        if (peekTokenIs(LBRACKET)) {
             expectPeek(LBRACKET);
-            parserExpression();
+            parseExpression();
             expectPeek(RBRACKET);
         }
+
+        expectPeek(EQ);
+        parseExpression();
+        expectPeek(SEMICOLON);
+        printNonTerminal("/letStatement");
     }
 
-    // expression -> term (op term)*
-    void parserExpression(){
-        System.out.println("<expression>");
+    void parseWhile() {
+        printNonTerminal("whileStatement");
+  
+        printNonTerminal("/whileStatement");
+    }
+
+    void parseIf() {
+        printNonTerminal("ifStatement");
+
+        printNonTerminal("/ifStatement");
+    }
+
+    void parseStatements() {
+        printNonTerminal("statements");
+
+        printNonTerminal("/statements");
+    }
+
+    void parseStatement() {
+
+    }
+
+    void parseReturn() {
+        printNonTerminal("returnStatement");
+        
+        printNonTerminal("/returnStatement");
+    }
+
+    void parseExpressionList() {
+        printNonTerminal("expressionList");
+
+        printNonTerminal("/expressionList");
+    }
+
+    void parseExpression() {
+        printNonTerminal("expression");
         parseTerm();
-        parseOper();
-        System.out.println("</expression>");
-    }
-
-    // op -> + | - | * | / | < | > | =
-    void parseOper() {
-        if (peekTokenIs(PLUS)) {
-            expectPeek(PLUS);
+        while (isOperator(peekToken.type)) {
+            expectPeek(peekToken.type);
             parseTerm();
-            parseOper();
-        } else if (peekTokenIs(MINUS)) {
-            expectPeek(MINUS);
-            parseTerm();
-            parseOper();
-        } else if (peekTokenIs(ASTERISK)) {
-            expectPeek(ASTERISK);
-            parseTerm();
-            parseOper();
-        } else if (peekTokenIs(SLASH)) {
-            expectPeek(SLASH);
-            parseTerm();
-            parseOper();
-        } else if (peekTokenIs(LT)) {
-            expectPeek(LT);
-            parseTerm();
-            parseOper();
-        } else if (peekTokenIs(BT)) {
-            expectPeek(BT);
-            parseTerm();
-            parseOper();
-        } else if (peekTokenIs(SEMICOLON) || peekTokenIs(RBRACKET)) {
-            // vazio --> indica o final da entrada/arquivo
-        } else {
-            throw new Error("syntax error found " + currentToken.lexeme);
         }
+        printNonTerminal("/expression");
     }
 
-    // term -> number | stringConstant | keywordConstant | identifier
-    void parseTerm () {
-        System.out.println("<term>");
+    void parseTerm() {
+        printNonTerminal("term");
         switch (peekToken.type) {
-            case NUMBER:
-                expectPeek(NUMBER);
+            case INTEGER:
+                expectPeek(INTEGER);
+                break;
+            case STRING:
+                expectPeek(STRING);
+                break;
+            case FALSE:
+            case NULL:
+            case TRUE:
+            case THIS:
+                expectPeek(FALSE, NULL, TRUE, THIS);
                 break;
             case IDENTIFIER:
                 expectPeek(IDENTIFIER);
+                if (peekTokenIs (LBRACKET) ) {
+                    expectPeek(LBRACKET);
+                    parseExpression();
+                    expectPeek(RBRACKET);
+                }
                 break;
-            case STRING: 
-                expectPeek(STRING);
-                break;
-            case TRUE:
-                expectPeek(TRUE);
-                break;
-            case FALSE:
-                expectPeek(FALSE);
-                break;
-            case NULL:
-                expectPeek(NULL);
-                break;
-            case THIS:
-                expectPeek(THIS);
+            case MINUS:
+            case NOT:
+                expectPeek(MINUS, NOT);
+                parseTerm();
                 break;
             default:
-                ;
+                throw error (peekToken, "term expected");
         }
-        System.out.println("</term>");
+        printNonTerminal("/term");
     }
 
     // funções auxiliares
+    public String XMLOutput() {
+        return xmlOutput.toString();
+    }
 
-    boolean peekTokenIs (TokenType type){
+    private void printNonTerminal(String nterminal) {
+        xmlOutput.append(String.format("<%s>\r\n", nterminal));
+    }
+
+
+    boolean peekTokenIs(TokenType type) {
         return peekToken.type == type;
     }
 
-    boolean currentTokenIs (TokenType type){
+    boolean currentTokenIs(TokenType type) {
         return currentToken.type == type;
+    }
+
+    private void expectPeek(TokenType... types) {
+        for (TokenType type : types) {
+            if (peekToken.type == type) {
+                expectPeek(type);
+                return;
+            }
+        }
+
+       throw error(peekToken, "Expected a statement");
     }
 
     private void expectPeek(TokenType type) {
         if (peekToken.type == type) {
             nextToken();
-            System.out.println(currentToken);
+            xmlOutput.append(String.format("%s\r\n", currentToken.toString()));
         } else {
-            throw new Error("Syntax Error - expected " + type + " found " + peekToken.lexeme);
+            throw error(peekToken, "Expected "+type.name());
         }
     }
-    
+
+    private static void report(int line, String where,
+        String message) {
+            System.err.println(
+            "[line " + line + "] Error" + where + ": " + message);
+    }
+
+    private ParseError error(Token token, String message) {
+        if (token.type == TokenType.EOF) {
+            report(token.line, " at end", message);
+        } else {
+            report(token.line, " at '" + token.value() + "'", message);
+        }
+        return new ParseError();
+    }
+
 }
