@@ -57,6 +57,10 @@ public class Parser {
 
     void parseDo() {
         printNonTerminal("doStatement");
+
+        expectPeek(DO);
+        parseSubroutineCall();
+        expectPeek(SEMICOLON);
     
         printNonTerminal("/doStatement");
     }
@@ -151,8 +155,9 @@ public class Parser {
 
     void parseLet() {
         printNonTerminal("letStatement");
+
         expectPeek(LET);
-        expectPeek(IDENTIFIER);
+        expectPeek(IDENTIFIER); // varName
 
         if (peekTokenIs(LBRACKET)) {
             expectPeek(LBRACKET);
@@ -163,11 +168,21 @@ public class Parser {
         expectPeek(EQ);
         parseExpression();
         expectPeek(SEMICOLON);
+
         printNonTerminal("/letStatement");
     }
 
     void parseWhile() {
         printNonTerminal("whileStatement");
+
+        expectPeek(WHILE);
+        expectPeek(LPAREN);
+        parseExpression();
+        expectPeek(RPAREN);
+
+        expectPeek(LBRACE);
+        parseStatements();
+        expectPeek(RBRACE);
   
         printNonTerminal("/whileStatement");
     }
@@ -175,21 +190,65 @@ public class Parser {
     void parseIf() {
         printNonTerminal("ifStatement");
 
+        expectPeek(IF);
+        expectPeek(LPAREN);
+        parseExpression();
+        expectPeek(RPAREN);
+    
+        expectPeek(LBRACE);
+        parseStatements();
+        expectPeek(RBRACE);
+
+        //opcional ter o else
+        if(peekTokenIs(ELSE)){
+            expectPeek(ELSE);
+            expectPeek(LBRACE);
+            parseStatements();
+            expectPeek(RBRACE);
+        }
+
         printNonTerminal("/ifStatement");
     }
 
     void parseStatements() {
         printNonTerminal("statements");
+        
+        // 0 ou vários statements
+        while (peekTokenIs(LET) || peekTokenIs(IF) || peekTokenIs(WHILE) || peekTokenIs(DO) || peekTokenIs(RETURN)) {
+            parseStatement();
+        }
 
         printNonTerminal("/statements");
     }
 
     void parseStatement() {
-
+        switch (peekToken.type) {
+            case LET:
+                parseLet();
+                break;
+            case IF:
+                parseIf();
+                break;
+            case WHILE:
+                parseWhile();
+                break;
+            case DO:
+                parseDo();
+                break;
+            case RETURN:
+                parseReturn();
+                break;
+        }
     }
 
     void parseReturn() {
         printNonTerminal("returnStatement");
+
+        expectPeek(RETURN);
+
+        // opcional - inserir expressão como opcional 
+
+        expectPeek(SEMICOLON);
         
         printNonTerminal("/returnStatement");
     }
