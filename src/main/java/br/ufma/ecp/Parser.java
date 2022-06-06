@@ -52,7 +52,21 @@ public class Parser {
     }
 
     void parseSubroutineCall() {
+        expectPeek(IDENTIFIER); // subroutineName
 
+        if(peekTokenIs(LPAREN)){ // '(' expression ')'
+            expectPeek(LPAREN);
+            parseExpressionList();
+            expectPeek(RPAREN);
+        }
+        
+        if(peekTokenIs(DOT)){
+            expectPeek(DOT);
+            expectPeek(IDENTIFIER); // subroutineName
+            expectPeek(LPAREN);
+            parseExpressionList();
+            expectPeek(RPAREN);
+        }
     }
 
     void parseDo() {
@@ -126,12 +140,12 @@ public class Parser {
         if (!peekTokenIs(RPAREN)){
             parseType(); 
             expectPeek(IDENTIFIER);
-        }
 
-        while (peekTokenIs(COMMA)){
-            expectPeek(COMMA);
-            parseType();
-            expectPeek(IDENTIFIER);
+            while (peekTokenIs(COMMA)){
+                expectPeek(COMMA);
+                parseType();
+                expectPeek(IDENTIFIER);
+            }
         }
 
         printNonTerminal("/parameterList");
@@ -246,7 +260,9 @@ public class Parser {
 
         expectPeek(RETURN);
 
-        // opcional - inserir expressão como opcional 
+        if (!peekTokenIs(SEMICOLON)) { // caso o token seja diferente de ';', então temos uma expressão
+            parseExpression(); 
+        }
 
         expectPeek(SEMICOLON);
         
@@ -255,6 +271,16 @@ public class Parser {
 
     void parseExpressionList() {
         printNonTerminal("expressionList");
+
+        if (!peekTokenIs(RPAREN)) { // caso o token seja ')', então está vazio
+            // caso o token seja diferente de ')', podemos ter uma ou várias expressions
+            parseExpression(); 
+
+            while (peekTokenIs(COMMA)) {
+                expectPeek(COMMA);
+                parseExpression();
+            }
+        }
 
         printNonTerminal("/expressionList");
     }
@@ -278,22 +304,42 @@ public class Parser {
             case STRING:
                 expectPeek(STRING);
                 break;
+            case TRUE:
             case FALSE:
             case NULL:
-            case TRUE:
             case THIS:
                 expectPeek(FALSE, NULL, TRUE, THIS);
                 break;
             case IDENTIFIER:
                 expectPeek(IDENTIFIER);
-                if (peekTokenIs (LBRACKET) ) {
+                if (peekTokenIs(LBRACKET) ) { // varName '[' expression ']'
                     expectPeek(LBRACKET);
                     parseExpression();
                     expectPeek(RBRACKET);
+                }else{
+                    if(peekTokenIs(LPAREN)){ // '(' expression ')'
+                        expectPeek(LPAREN);
+                        parseExpressionList();
+                        expectPeek(RPAREN);
+                    }
+                    
+                    if(peekTokenIs(DOT)){
+                        expectPeek(DOT);
+                        expectPeek(IDENTIFIER); // subroutineName
+                        expectPeek(LPAREN);
+                        parseExpressionList();
+                        expectPeek(RPAREN);
+                    }
                 }
+                break;                
+                
+            case LPAREN:
+                expectPeek(LPAREN);
+                parseExpression();
+                expectPeek(RPAREN);
                 break;
-            case MINUS:
-            case NOT:
+            case MINUS: // unaryOp
+            case NOT: // unaryOp
                 expectPeek(MINUS, NOT);
                 parseTerm();
                 break;
@@ -337,7 +383,7 @@ public class Parser {
             nextToken();
             xmlOutput.append(String.format("%s\r\n", currentToken.toString()));
         } else {
-            throw error(peekToken, "Expected "+type.name());
+            throw error(peekToken, "Expected "+ type.name());
         }
     }
 
