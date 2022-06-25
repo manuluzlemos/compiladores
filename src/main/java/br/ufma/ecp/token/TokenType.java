@@ -3,6 +3,8 @@ package br.ufma.ecp.token;
 import java.util.Arrays;
 
 public enum TokenType {
+ 
+    
 
     STRING(),
 
@@ -16,6 +18,7 @@ public enum TokenType {
     CHAR("char"),BOOLEAN("boolean"),VOID("void"),TRUE("true"),FALSE("false"),
     NULL("null"),THIS("this"),LET("let"),DO("do"),IF("if"),
     ELSE("else"), RETURN("return"),
+
 
     // Symbols
     PLUS("+"),
@@ -40,10 +43,11 @@ public enum TokenType {
     LBRACKET("["),
     RBRACKET("]"),
 
+
     EOF();
 
+
     private TokenType() {
-        System.out.println("iii");
     }
 
     private TokenType(String value) {
@@ -52,12 +56,14 @@ public enum TokenType {
 
     public String value;
 
+
     public static TokenType fromValue(String value) {
         return Arrays.stream(TokenType.values())
                 .filter(symbolType -> symbolType.value != null && symbolType.value.equals(value))
                 .findFirst()
                 .orElse(null);
     }
+
 
     static public boolean isSymbol (char c) {
         String symbols = "{}()[].,;+-*/&|<>=~";
@@ -69,7 +75,9 @@ public enum TokenType {
     }
 
     static public TokenType keyword (String value) {
-        return fromValue(value);
+      return fromValue(value);
     }
 
+
+    
 }

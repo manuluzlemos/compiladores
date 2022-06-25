@@ -66,6 +66,7 @@ public class Scanner {
 
                 throw new Error(line + ":Unexpected character: " + peek());
         }
+
     }
 
     private void skipBlockComments() {
@@ -90,6 +91,7 @@ public class Scanner {
     }
 
     private void skipLineComments() {
+
         for (char ch = peek(); ch != '\n' && ch != 0; advance(), ch = peek())
             if (ch == '\n')
                 line++;
@@ -122,7 +124,7 @@ public class Scanner {
     }
 
     private Token identifier() {
-        while (isAlphaNumeric(peek())) {
+        while (isAlphaNumeric(peek()) || peek() == '_') {
             advance();
         }
         String id = new String(input, start, current - start, StandardCharsets.UTF_8);
@@ -133,6 +135,7 @@ public class Scanner {
         } else {
             return new KeywordToken(type, line);
         }
+
     }
 
     private Token number() {
@@ -173,4 +176,5 @@ public class Scanner {
             return 0;
         }
     }
+
 }

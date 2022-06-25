@@ -7,6 +7,7 @@ public class IdentifierToken extends Token {
     public IdentifierToken(String lexeme, int line) {
         super(TokenType.IDENTIFIER, line);
         this.lexeme = lexeme;
+
     }
 
     public String toString() {

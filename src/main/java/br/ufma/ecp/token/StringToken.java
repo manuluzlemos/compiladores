@@ -8,6 +8,7 @@ public class StringToken extends Token {
     public StringToken(String lexeme, int line) {
         super(TokenType.STRING, line);
         this.lexeme = lexeme;
+
     }
 
     public String toString() {
