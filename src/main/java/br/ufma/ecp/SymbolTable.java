@@ -23,18 +23,15 @@ public class SymbolTable {
     }
 
     public void startSubroutine() {
-
         subroutineScope.clear();
         countVars.put(Kind.ARG, 0);
         countVars.put(Kind.VAR, 0);
-
-
     }
     
     
     public void define (String name, String type, Kind kind) {
         Symbol s = new Symbol (name, type, kind, varCount(kind) );
-        if (kind == kind.STATIC || kind == Kind.FIELD) {
+        if (kind == Kind.STATIC || kind == Kind.FIELD) {
             classScope.put(name, s);
         } else {
            subroutineScope.put(name, s);
