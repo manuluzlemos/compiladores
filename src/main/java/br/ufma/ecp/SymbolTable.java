@@ -26,8 +26,7 @@ public class SymbolTable {
         subroutineScope.clear();
         countVars.put(Kind.ARG, 0);
         countVars.put(Kind.VAR, 0);
-    }
-    
+    }    
     
     public void define (String name, String type, Kind kind) {
         Symbol s = new Symbol (name, type, kind, varCount(kind) );
@@ -49,5 +48,15 @@ public class SymbolTable {
         return countVars.get(kind);
     }
 
-    
+    public boolean resolve(String name, Symbol s){
+        boolean r = true;
+        if(subroutineScope.get(name) != null){
+            s = subroutineScope.get(name);
+        } else if (classScope.get(name) != null){
+            s = classScope.get(name);
+        } else {
+            r = false;
+        }
+        return r;
+    }    
 }

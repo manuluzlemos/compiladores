@@ -370,7 +370,7 @@ public class GeneratorCodeTest {
 
 
     @Test
-    public void termExpressionLiteralKeyword () {
+    public void termxExpressionLiteralKeyword () {
         var input = """
             class Main {
                 function void main () {
