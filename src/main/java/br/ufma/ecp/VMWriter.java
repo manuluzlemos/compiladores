@@ -45,7 +45,7 @@ public class VMWriter {
     } 
 
     public void writeArithmetic(Command command) {
-        vmOutput.append (String.format ("\n", command.name().toLowerCase()));
+        vmOutput.append (String.format ("%s\n", command.name().toLowerCase()));
     } 
 
     public void writeLabel(String label) {

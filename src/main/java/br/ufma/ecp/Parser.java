@@ -68,6 +68,7 @@ public class Parser {
         var numArgs = 0;
 
         var ident = currentToken.value();
+        Symbol symbol = symbolTable.resolve(currentToken.value());
 
         if (peekTokenIs(LPAREN)) { // é um método da própria classe
             expectPeek(LPAREN);
@@ -81,8 +82,7 @@ public class Parser {
         } else { // pode ser um metodo de um outro objeto ou uma função
             expectPeek(DOT);
             expectPeek(IDENTIFIER);
-            
-            Symbol symbol = symbolTable.resolve(currentToken.value());
+                        
             functionName = currentToken.value();
 
             if(symbolTable.resolve(ident, symbol)){

@@ -15,10 +15,7 @@ class Pessoa {
     }
 }
 
-public class App 
-{
-
-
+public class App {
 
     private static String fromFile() {
         File file = new File("Main.jack");
