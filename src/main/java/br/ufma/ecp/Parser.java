@@ -575,7 +575,7 @@ public class Parser {
                 if (tokenType == MINUS) {
                     vmWriter.writeArithmetic(Command.NEG);
                 } else {
-                    vmWriter.writeArithmetic(Command.NEG);
+                    vmWriter.writeArithmetic(Command.NOT);
                 }
                 break;
             default:
